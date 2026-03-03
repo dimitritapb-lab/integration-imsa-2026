@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billetterie - Journée d'Intégration IMSA 2026</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="les_billets_je.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+
+    <div class="progress-bar" id="progressBar"></div>
+<form name="billeterie" enctype="multipart/form-data" data-netlify="true">
+  <p>
+    <label>
+      <span>Name:</span>
+      <input name="name" type="text" />
+    </label>
+  </p>
+  <p>
+    <label>
+      <span>Add file:</span>
+      <input name="file" type="file" />
+    </label>
+  </p>
+  <button>Submit</button>
+</form>
+<p class="result"></p>
+    <!-- Bouton Admin discret (coin haut droit) -->
+    <a href="#" class="admin-link" title="Accès Administration" onclick="checkAdminAccess(event)">
+        <i class="fas fa-lock"></i>
+    </a>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1>🎓 Journée d'Intégration de IMSA 2026</h1>
+            <p class="subtitle">Réservez votre place pour une journée inoubliable !</p>
+            <div class="countdown" id="countdown">
+                <div class="countdown-item"><span id="days">15</span><small>Jours</small></div>
+                <div class="countdown-item"><span id="hours">08</span><small>Heures</small></div>
+                <div class="countdown-item"><span id="minutes">30</span><small>Minutes</small></div>
+                <div class="countdown-item"><span id="seconds">00</span><small>Secondes</small></div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <div class="availability-card">
+            <div class="availability-info">
+                <i class="fas fa-ticket-alt"></i>
+                <span id="placesLeft">190</span> places disponibles
+            </div>
+            <div class="progress">
+                <div class="progress-fill" id="availabilityProgress" style="width: 100%"></div>
+            </div>
+        </div>
+
+        <div class="ticket-card">
+            <h2><i class="fas fa-edit"></i> Formulaire de réservation</h2>
+
+            <form id="ticketForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name"><i class="fas fa-user"></i> Nom complet *</label>
+                        <input type="text" id="name" placeholder="Jean Dupont" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email"><i class="fas fa-envelope"></i> Email *</label>
+                        <input type="email" id="email" placeholder="jean.dupont@etudiant.fr" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="studentId"><i class="fas fa-id-card"></i> Matricule étudiant *</label>
+                        <input type="text" id="studentId" placeholder="IMSA25L_INT15_090" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone"><i class="fas fa-phone"></i> Téléphone</label>
+                        <input type="tel" id="phone" placeholder="062 123 456">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="department"><i class="fas fa-graduation-cap"></i> Filière *</label>
+                        <select id="department" required>
+                            <option value="">Sélectionnez votre filière</option>
+                            <option value="info">Informatique</option>
+                            <option value="gestion">Gestion</option>
+                            <option value="marketing">Marketing</option>
+                            <option value="rh">Ressources Humaines</option>
+                            <option value="compta">Comptabilité</option>
+                            <option value="gin">Genie industriel</option>
+                            <option value="bav">Biologie animal</option>
+                            <option value="san">Etude de maieutique</option>
+                           
+                            <option value="autre">autre</option>
+                            <option value=""></option>
+                            
+
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="year"><i class="fas fa-calendar"></i> Année d'étude *</label>
+                        <select id="year" required>
+                            <option value="">Sélectionnez</option>
+                            <option value="1">Licence 1</option>
+                            <option value="2">Licence 2</option>
+                            <option value="3">Licence 3</option>
+                            <option value="4">Master 1</option>
+                            <option value="5">Master 2</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-ticket"></i> Type de billet *</label>
+                    <div class="ticket-options">
+                        <div class="ticket-option" data-price="2000">
+                            <input type="radio" name="ticketType" id="ticketSimple" value="simple" checked>
+                            <label for="ticketSimple">
+                                <strong>Simple</strong>
+                                <span class="price">2 000 XAF</span>
+                                <small>Accès à la journée</small>
+                            </label>
+                        </div>
+                        <div class="ticket-option" data-price="5000">
+                            <input type="radio" name="ticketType" id="ticketRepas" value="repas">
+                            <label for="ticketRepas">
+                                <strong>Avec repas</strong>
+                                <span class="price">5 000 XAF</span>
+                                <small>Journée + repas</small>
+                            </label>
+                        </div>
+                        <div class="ticket-option" data-price="7000">
+                            <input type="radio" name="ticketType" id="ticketVip" value="vip">
+                            <label for="ticketVip">
+                                <strong>VIP</strong>
+                                <span class="price">7 000 XAF</span>
+                                <small>Accès prioritaire + tombola</small>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group extras">
+                    <label><i class="fas fa-plus-circle"></i> Options supplémentaires</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" id="tshirt"> T-shirt personnalisé (+2 000 XAF)</label>
+                        <label><input type="checkbox" id="drink"> Boisson illimitée (+1 000 XAF)</label>
+                    </div>
+                </div>
+
+                <div class="total-price">
+                    Total à payer sur place : <span id="totalAmount">2 000</span> XAF
+                </div>
+
+                <div class="cash-payment-info">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <div>
+                        <strong>Paiement en espèces le jour J</strong>
+                        <p>Réglez le montant indiqué ci-dessus directement à l'accueil. Présentez votre QR code à l'entrée pour récupérer votre billet.</p>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <i class="fas fa-ticket-alt"></i> Réserver mon billet
+                </button>
+            </form>
+        </div>
+
+        <!-- Modal confirmation ticket -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div class="ticket-preview">
+                    <h2>🎉 Réservation confirmée !</h2>
+                    <div class="ticket-content">
+                        <div class="ticket-header"><h3>Journée d'Intégration IMSA 2026</h3></div>
+                        <div class="ticket-body">
+                            <div class="ticket-info" id="ticketInfo"></div>
+                            <div class="qr-code" id="qrCode"></div>
+                        </div>
+                        <div class="ticket-footer">
+                            <p>📲 Présentez ce QR code à l'entrée</p>
+                            <p class="small">💰 Règlement en espèces à l'accueil</p>
+                            <p class="small">📧 Un email de confirmation vous a été envoyé</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal mot de passe admin -->
+        <div id="adminModal" class="modal">
+            <div class="modal-content admin-modal-content">
+                <span class="close" onclick="document.getElementById('adminModal').style.display='none'">&times;</span>
+                <h2><i class="fas fa-shield-alt"></i> Accès Administration</h2>
+                <p>Entrez le mot de passe administrateur</p>
+                <div class="admin-form">
+                    <input type="password" id="adminPassword" placeholder="Mot de passe..." onkeydown="if(event.key==='Enter') verifyAdmin()">
+                    <button onclick="verifyAdmin()" class="btn-submit">
+                        <i class="fas fa-unlock"></i> Accéder
+                    </button>
+                    <p id="adminError" class="admin-error"></p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 - Journée d'Intégration IMSA - Tous droits réservés</p>
+        <p>Pour toute question : <a href="mailto:carbosadboy@gmail.com">carbosadboy@gmail.com</a></p>
+    </footer>
+
+    <script src="animal.js"></script>
+</body>
+</html>
