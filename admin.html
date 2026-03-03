@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - Billetterie IMSA 2026</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="administration.css">
+
+
+</head>
+
+<body>
+
+<!-- ============================================================
+     NAVBAR
+============================================================ -->
+<nav class="admin-nav">
+    <div class="nav-brand">
+        <i class="fas fa-shield-alt"></i>
+        <span>Administration — Billetterie IMSA 2026</span>
+    </div>
+    <div class="nav-actions">
+        <span class="last-update">
+            <i class="fas fa-clock"></i> Màj : <span id="updateTime">—</span>
+        </span>
+        <button onclick="refreshData()" class="btn-icon" title="Actualiser">
+            <i class="fas fa-sync-alt"></i>
+        </button>
+        <a href="index.html" class="btn-icon" title="Retour au site">
+            <i class="fas fa-home"></i>
+        </a>
+    </div>
+</nav>
+
+<!-- ============================================================
+     LAYOUT PRINCIPAL
+============================================================ -->
+<div class="admin-container">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="admin-sidebar">
+
+        <!-- Statistiques rapides -->
+        <div class="stats-card">
+            <h3><i class="fas fa-chart-bar"></i> Aperçu rapide</h3>
+            <div class="stat-item">
+                <div class="stat-label"><i class="fas fa-users"></i> Total inscriptions</div>
+                <div class="stat-value" id="totalBookings">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label"><i class="fas fa-ticket-alt"></i> Places restantes</div>
+                <div class="stat-value" id="availablePlaces">150</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label"><i class="fas fa-check-circle" style="color:#4CAF50"></i> Validés</div>
+                <div class="stat-value" id="validatedCount">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label"><i class="fas fa-clock" style="color:#ff9800"></i> En attente</div>
+                <div class="stat-value" id="pendingCount">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label"><i class="fas fa-coins"></i> Chiffre d'affaires</div>
+                <div class="stat-value" id="totalRevenue">0 XAF</div>
+            </div>
+        </div>
+
+        <!-- Filtres -->
+        <div class="stats-card">
+            <h3><i class="fas fa-filter"></i> Filtres</h3>
+            <div class="filter-group">
+                <label>Type de billet</label>
+                <select id="filterTicketType">
+                    <option value="all">Tous les types</option>
+                    <option value="simple">Simple</option>
+                    <option value="repas">Avec repas</option>
+                    <option value="vip">VIP</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Statut</label>
+                <select id="filterStatus">
+                    <option value="all">Tous les statuts</option>
+                    <option value="validated">Validés</option>
+                    <option value="pending">En attente</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Filière</label>
+                <select id="filterDepartment">
+                    <option value="all">Toutes les filières</option>
+                    <option value="info">Informatique</option>
+                    <option value="gestion">Gestion</option>
+                    <option value="marketing">Marketing</option>
+                    <option value="rh">Ressources Humaines</option>
+                    <option value="compta">Comptabilité</option>
+                    <option value="autre">Autre</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Année</label>
+                <select id="filterYear">
+                    <option value="all">Toutes les années</option>
+                    <option value="1">Licence 1</option>
+                    <option value="2">Licence 2</option>
+                    <option value="3">Licence 3</option>
+                    <option value="4">Master 1</option>
+                    <option value="5">Master 2</option>
+                </select>
+            </div>
+            <button onclick="applyFilters()" class="btn-filter">
+                <i class="fas fa-search"></i> Appliquer
+            </button>
+            <button onclick="resetFilters()" class="btn-filter btn-secondary">
+                <i class="fas fa-undo"></i> Réinitialiser
+            </button>
+        </div>
+
+        <!-- Graphiques -->
+        <div class="stats-card">
+            <h3><i class="fas fa-chart-pie"></i> Répartition billets</h3>
+            <div class="chart-container"><canvas id="ticketChart"></canvas></div>
+            <h3 style="margin-top:10px"><i class="fas fa-graduation-cap"></i> Par filière</h3>
+            <div class="chart-container"><canvas id="departmentChart"></canvas></div>
+        </div>
+
+    </aside>
+
+    <!-- ===== CONTENU PRINCIPAL ===== -->
+    <main class="admin-main">
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Rechercher par nom, email, matricule...">
+            </div>
+            <div class="toolbar-actions">
+                <button onclick="exportToExcel()" class="btn-toolbar">
+                    <i class="fas fa-file-excel"></i> Excel
+                </button>
+                <button onclick="exportToPDF()" class="btn-toolbar">
+                    <i class="fas fa-file-pdf"></i> PDF
+                </button>
+                <button onclick="printList()" class="btn-toolbar">
+                    <i class="fas fa-print"></i> Imprimer
+                </button>
+                <button onclick="showScanModal()" class="btn-toolbar btn-primary">
+                    <i class="fas fa-qrcode"></i> Scanner QR
+                </button>
+            </div>
+        </div>
+
+        <!-- Tableau -->
+        <div class="table-container">
+            <table class="bookings-table" id="bookingsTable">
+                <thead>
+                    <tr>
+                        <th style="width:36px">
+                            <input type="checkbox" id="selectAll">
+                        </th>
+                        <th onclick="sortTable('name')">Nom <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable('email')">Email <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable('studentId')">Matricule <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable('department')">Filière <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable('ticketType')">Billet <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable('total')">Montant <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable('date')">Date <i class="fas fa-sort"></i></th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <button onclick="changePage('prev')" id="prevPage" disabled>
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <span id="pageInfo">Page 1 sur 1</span>
+            <button onclick="changePage('next')" id="nextPage" disabled>
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+    </main>
+</div>
+
+<!-- ============================================================
+     MODAL SCAN QR CODE
+============================================================ -->
+<div id="scanModal" class="modal">
+    <div class="modal-content modal-scan">
+        <span class="close" onclick="closeScanModal()">&times;</span>
+        <h2><i class="fas fa-qrcode"></i> Scanner un QR Code</h2>
+        <div class="scan-container">
+            <div class="qr-reader" id="qr-reader"></div>
+            <div id="scanResult"></div>
+        </div>
+        <div class="manual-check">
+            <h3><i class="fas fa-keyboard"></i> Vérification manuelle</h3>
+            <input type="text" id="manualTicketId" placeholder="Entrez l'ID du ticket (ex: IMSA-...)">
+            <button onclick="manualCheck()" class="btn-submit-sm">
+                <i class="fas fa-search"></i> Vérifier
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     MODAL DÉTAILS RÉSERVATION
+============================================================ -->
+<div id="detailsModal" class="modal">
+    <div class="modal-content modal-details">
+        <span class="close" onclick="closeDetailsModal()">&times;</span>
+        <h2><i class="fas fa-info-circle"></i> Détails de la réservation</h2>
+        <div id="bookingDetails"></div>
+    </div>
+</div>
+
+<!-- ============================================================
+     SCRIPTS EXTERNES
+============================================================ -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+
+<!-- ============================================================
+     JAVASCRIPT INTÉGRÉ
+============================================================ -->
+<script src="administration.js"></script>
+</body>
+</html>
