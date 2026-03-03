@@ -1,0 +1,470 @@
+/* ============================================================
+   VARIABLES & RESET
+============================================================ */
+:root {
+    --sidebar-width: 300px;
+    --primary:   #667eea;
+    --primary-d: #5a67d8;
+    --success:   #4CAF50;
+    --warning:   #ff9800;
+    --danger:    #f44336;
+    --info:      #2196f3;
+    --dark:      #1a1c2c;
+    --radius:    15px;
+    --shadow:    0 5px 20px rgba(0,0,0,0.1);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+/* ============================================================
+   NAVBAR
+============================================================ */
+.admin-nav {
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(10px);
+    padding: 14px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.12);
+    position: sticky;
+    top: 0;
+    z-index: 200;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1em;
+    font-weight: 700;
+    color: var(--dark);
+}
+.nav-brand i { color: var(--primary); font-size: 1.3em; }
+
+.nav-actions { display: flex; align-items: center; gap: 12px; }
+
+.last-update { font-size: 0.85em; color: #777; }
+
+.btn-icon {
+    background: none;
+    border: none;
+    font-size: 1.1em;
+    color: #777;
+    cursor: pointer;
+    padding: 8px 11px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+.btn-icon:hover { background: #f0f0f0; color: var(--primary); }
+
+/* ============================================================
+   LAYOUT
+============================================================ */
+.admin-container {
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+    max-width: 1700px;
+    margin: 0 auto;
+}
+
+/* ============================================================
+   SIDEBAR
+============================================================ */
+.admin-sidebar { width: var(--sidebar-width); flex-shrink: 0; }
+
+.stats-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow);
+}
+
+.stats-card h3 {
+    margin-bottom: 16px;
+    font-size: 1em;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.stats-card h3 i { color: var(--primary); }
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 0;
+    border-bottom: 1px solid #f3f3f3;
+}
+.stat-item:last-child { border-bottom: none; }
+
+.stat-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+    font-size: 0.9em;
+}
+.stat-label i { width: 18px; color: var(--primary); }
+
+.stat-value { font-weight: 700; font-size: 1.05em; color: #222; }
+
+/* Filtres */
+.filter-group { margin-bottom: 13px; }
+.filter-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+    font-size: 0.85em;
+    font-weight: 600;
+}
+.filter-group select {
+    width: 100%;
+    padding: 9px 10px;
+    border: 2px solid #e8e8e8;
+    border-radius: 8px;
+    font-size: 13px;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+.filter-group select:focus { outline: none; border-color: var(--primary); }
+
+.btn-filter {
+    width: 100%;
+    padding: 11px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+.btn-filter:hover { background: var(--primary-d); }
+.btn-filter.btn-secondary { background: #f0f0f0; color: #444; }
+.btn-filter.btn-secondary:hover { background: #e0e0e0; }
+
+/* Graphiques */
+.chart-container { margin: 14px 0; height: 190px; }
+
+/* ============================================================
+   MAIN
+============================================================ */
+.admin-main { flex: 1; min-width: 0; }
+
+/* Toolbar */
+.toolbar {
+    background: white;
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    box-shadow: var(--shadow);
+}
+
+.search-box { flex: 1; min-width: 220px; position: relative; }
+.search-box i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+}
+.search-box input {
+    width: 100%;
+    padding: 11px 11px 11px 38px;
+    border: 2px solid #e8e8e8;
+    border-radius: 8px;
+    font-size: 13px;
+    transition: border-color 0.2s;
+}
+.search-box input:focus { outline: none; border-color: var(--primary); }
+
+.toolbar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.btn-toolbar {
+    padding: 9px 14px;
+    background: #f4f4f4;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s;
+    color: #444;
+}
+.btn-toolbar:hover { background: #e8e8e8; }
+.btn-toolbar.btn-primary { background: var(--primary); color: white; }
+.btn-toolbar.btn-primary:hover { background: var(--primary-d); }
+
+/* ============================================================
+   TABLEAU
+============================================================ */
+.table-container {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    overflow-x: auto;
+    box-shadow: var(--shadow);
+}
+
+.bookings-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1100px;
+}
+
+.bookings-table th {
+    text-align: left;
+    padding: 13px 10px;
+    background: #f8f9fa;
+    color: #444;
+    font-weight: 700;
+    font-size: 0.82em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 2px solid #ececec;
+}
+.bookings-table th:hover { background: #eef0ff; color: var(--primary); }
+.bookings-table th i { margin-left: 4px; font-size: 0.8em; color: #bbb; }
+
+.bookings-table td {
+    padding: 13px 10px;
+    border-bottom: 1px solid #f4f4f4;
+    color: #555;
+    font-size: 0.9em;
+}
+.bookings-table tr:hover td { background: #fafbff; }
+
+/* Badges type billet */
+.ticket-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: 700;
+}
+.ticket-badge.simple  { background: #e8f5e9; color: #388e3c; }
+.ticket-badge.repas   { background: #fff3e0; color: #e65100; }
+.ticket-badge.vip     { background: #fce4ec; color: #c2185b; }
+
+/* Badges statut */
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: 700;
+    display: inline-block;
+}
+.status-validated { background: #e8f5e9; color: #388e3c; }
+.status-pending   { background: #fff3e0; color: #e65100; }
+
+/* Boutons action */
+.action-buttons { display: flex; gap: 5px; }
+.btn-action {
+    padding: 5px 9px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.82em;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+.btn-view     { background: #e3f2fd; color: #1565c0; }
+.btn-validate { background: #e8f5e9; color: #2e7d32; }
+.btn-delete   { background: #ffebee; color: #c62828; }
+.btn-action:hover { opacity: 0.75; transform: translateY(-1px); }
+
+/* ============================================================
+   PAGINATION
+============================================================ */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 18px;
+    background: white;
+    padding: 14px;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+}
+.pagination button {
+    padding: 7px 14px;
+    background: #f0f0f0;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+.pagination button:hover:not(:disabled) { background: var(--primary); color: white; }
+.pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+#pageInfo { font-size: 0.9em; color: #666; font-weight: 500; }
+
+/* ============================================================
+   MODALS
+============================================================ */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(3px);
+}
+.modal-content {
+    background: white;
+    margin: 6% auto;
+    padding: 28px;
+    border-radius: var(--radius);
+    width: 90%;
+    max-width: 520px;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    animation: modalIn 0.3s ease;
+}
+@keyframes modalIn {
+    from { opacity:0; transform: translateY(-30px) scale(0.97); }
+    to   { opacity:1; transform: translateY(0) scale(1); }
+}
+.modal-content h2 {
+    margin-bottom: 20px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.2em;
+}
+.modal-content h2 i { color: var(--primary); }
+
+.close {
+    position: absolute;
+    right: 18px; top: 14px;
+    font-size: 24px;
+    color: #aaa;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+}
+.close:hover { color: var(--danger); }
+
+/* Modal scan */
+.modal-scan { max-width: 480px; }
+.scan-container { text-align: center; margin: 16px 0; }
+.qr-reader {
+    width: 100%;
+    height: 280px;
+    background: #f5f5f5;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 14px;
+    border: 2px dashed #ddd;
+}
+.scan-result {
+    padding: 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95em;
+}
+.scan-result.success { background: #e8f5e9; color: #2e7d32; }
+.scan-result.error   { background: #ffebee; color: #c62828; }
+
+.manual-check {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid #eee;
+}
+.manual-check h3 { margin-bottom: 10px; font-size: 0.95em; color: #555; }
+.manual-check input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+}
+.manual-check input:focus { outline: none; border-color: var(--primary); }
+.btn-submit-sm {
+    padding: 10px 20px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%;
+    transition: background 0.2s;
+}
+.btn-submit-sm:hover { background: var(--primary-d); }
+
+/* Modal détails */
+.modal-details { max-width: 620px; }
+.booking-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 16px 0;
+}
+.detail-item {
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 3px solid var(--primary);
+}
+.detail-label { font-size: 0.78em; color: #888; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+.detail-value { font-weight: 700; color: #222; font-size: 0.95em; }
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+@media (max-width: 1200px) {
+    .admin-container { flex-direction: column; }
+    .admin-sidebar { width: 100%; }
+}
+@media (max-width: 768px) {
+    .toolbar { flex-direction: column; align-items: stretch; }
+    .toolbar-actions { justify-content: center; }
+    .booking-detail-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   ANIMATIONS NOTIFICATIONS
+============================================================ */
+@keyframes slideInRight {
+    from { transform: translateX(110%); opacity: 0; }
+    to   { transform: translateX(0);    opacity: 1; }
+}
+@keyframes slideOutRight {
+    from { transform: translateX(0);    opacity: 1; }
+    to   { transform: translateX(110%); opacity: 0; }
+}
